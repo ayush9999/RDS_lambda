@@ -17,7 +17,7 @@ provider:
 functions:
   rds_cloudwatch_monitoring:
     name: ${self:service}-${opt:stage, 'dev'}
-    handler: main.handler
+    handler: lambda_function.main
     description: Auto-increment rds_cloudwatch_monitoring
     memorySize: 128
     timeout: 120
