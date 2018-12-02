@@ -1,0 +1,30 @@
+plugins:
+  - rds_cloudwatch_monitoring
+
+service:
+  name: rds_cloudwatch_monitoring
+
+provider:
+  name: aws
+  runtime: python2.7
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "logs:*"
+        - "cloudwatch:Put*"
+      Resource: "*"
+
+functions:
+  rds_cloudwatch_monitoring:
+    name: ${self:service}-${opt:stage, 'dev'}
+    handler: main.handler
+    description: Auto-increment rds_cloudwatch_monitoring
+    memorySize: 128
+    timeout: 120
+    vpc:
+      securityGroupIds: ${file(.env.yml):lambda.vpc.securityGroupIds}
+      subnetIds: ${file(.env.yml):lambda.vpc.subnetIds}
+    events:
+     - schedule:
+          rate: rate(1 minute)
+          enabled: enable
